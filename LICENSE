@@ -1,0 +1,38 @@
+Waterbender License Terms
+
+Copyright (c) 2026 bbrcaddr. All rights reserved.
+
+These terms govern use of the Waterbender application ("Waterbender"). The
+companion SDK ("@waterbender-app/sdk") is licensed separately under the MIT
+License and is not covered by these terms.
+
+1. Free, non-commercial use.
+   You may download, install, and use Waterbender free of charge for personal,
+   educational, and other non-commercial purposes.
+
+2. Commercial use.
+   Commercial use of Waterbender — including use within a business or
+   organization, or to build, ship, or operate software or services for
+   commercial purposes — requires a paid commercial license. A paid plan is in
+   development; until it is generally available, commercial use is granted only
+   by written agreement.
+
+3. Your work is yours.
+   You retain all rights to the projects, blueprints, scripts, and exported
+   applications or websites you create with Waterbender. Whether your use of
+   Waterbender falls under the free tier (Section 1) or requires a commercial
+   license (Section 2) depends on the nature of that use.
+
+4. Restrictions.
+   You may not resell, sublicense, rent, or redistribute Waterbender itself as
+   your own product, nor remove or alter its licensing, branding, or attribution,
+   nor use Waterbender in violation of applicable law.
+
+5. No warranty; limitation of liability.
+   WATERBENDER IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
+   OUT OF, OR IN CONNECTION WITH WATERBENDER OR THE USE OR OTHER DEALINGS IN
+   WATERBENDER.
