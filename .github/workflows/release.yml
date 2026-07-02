@@ -1,0 +1,125 @@
+name: Release
+
+# Builds Waterbender from the PRIVATE source repo and publishes the signed
+# binaries + updater artifacts as a release in THIS (public) repo, where the
+# app's auto-updater looks for them.
+#
+# The private repo path is never written here — it's read from the SOURCE_REPO
+# secret, and GitHub masks secret values in the logs (even checkout's
+# "Syncing repository: ***" line). Only maintainers can run this (dispatch
+# requires write access), so the signing key and the source token are never
+# exposed to outside contributors / fork PRs.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   SOURCE_REPO                          owner/name of the private source repo
+#   SOURCE_CHECKOUT_TOKEN                fine-grained PAT with Contents: Read on it
+#   TAURI_SIGNING_PRIVATE_KEY            updater minisign private key
+#   TAURI_SIGNING_PRIVATE_KEY_PASSWORD  its password
+#
+# The built-in GITHUB_TOKEN (contents: write, below) creates the release here.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (e.g. v0.1.2)
+        required: true
+      ref:
+        description: Source ref to build (branch/tag/SHA in the private repo) — defaults to the tag
+        required: false
+      notes:
+        description: Release notes (Markdown) shown on the release. Blank = a default download/install blurb.
+        required: false
+
+permissions:
+  contents: write # create the release + tag in THIS public repo
+
+jobs:
+  build:
+    name: build ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            os: windows-latest
+            args: --bundles nsis
+            rust_targets: ''
+          - platform: linux
+            os: ubuntu-22.04
+            args: --bundles appimage
+            rust_targets: ''
+          - platform: macos
+            os: macos-latest
+            args: --target universal-apple-darwin --bundles dmg
+            rust_targets: aarch64-apple-darwin,x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Pull the private source at the requested ref. Path comes from a secret,
+      # so it's masked in logs; checkout lands in the public repo's workspace.
+      - name: Check out the private source
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.SOURCE_REPO }}
+          token: ${{ secrets.SOURCE_CHECKOUT_TOKEN }}
+          ref: ${{ inputs.ref || inputs.tag }}
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf libfuse2 file
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_targets }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: pnpm install --frozen-lockfile
+
+      # Build the release description: the maintainer's `notes` input verbatim,
+      # or a default download/install blurb. Read via env (not inlined) so notes
+      # content can't break the shell, and emitted as a multiline step output.
+      - name: Compose release notes
+        id: notes
+        shell: bash
+        env:
+          NOTES: ${{ inputs.notes }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          {
+            echo 'body<<WB_NOTES_EOF'
+            if [ -n "$NOTES" ]; then
+              printf '%s\n' "$NOTES"
+            else
+              printf 'Waterbender %s\n\n' "$TAG"
+              echo 'Download the installer for your platform from the assets below.'
+              echo
+              echo 'On first launch your OS shows a one-time "unknown publisher" / Gatekeeper'
+              echo 'warning — see the README for the quick bypass. Updates after that are automatic.'
+            fi
+            echo 'WB_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # Build + sign, and publish the release in THIS (public) repo. tauri-action
+      # runs here, so latest.json's URLs already point at this repo — no rewrite.
+      - name: Build + release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          args: ${{ matrix.args }}
+          tagName: ${{ inputs.tag }}
+          releaseName: Waterbender ${{ inputs.tag }}
+          releaseBody: ${{ steps.notes.outputs.body }}
+          releaseDraft: false
+          prerelease: false
