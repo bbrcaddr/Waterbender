@@ -23,6 +23,7 @@
     --border:rgba(255,255,255,.09); --border-2:rgba(255,255,255,.16);
     --b1:#22d3ee; --b2:#38bdf8; --b3:#3b82f6;
     --grad:linear-gradient(135deg,#22d3ee 0%,#38bdf8 45%,#3b82f6 100%);
+    --orange:linear-gradient(135deg,#fdba74 0%,#f97316 52%,#ea580c 100%);
     --radius:16px;
     --shadow:0 24px 60px -20px rgba(2,10,26,.75);
   }
@@ -76,19 +77,19 @@
 
   /* Download */
   .dl{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:34px}
-  .split{position:relative;display:inline-flex;border-radius:14px;box-shadow:0 12px 34px -10px rgba(34,211,238,.55);isolation:isolate}
-  .primary,.caret{background:var(--grad);color:#04121e;border:none;font:inherit;font-weight:700;cursor:pointer}
+  .split{position:relative;display:inline-flex;border-radius:14px;box-shadow:0 12px 34px -10px rgba(249,115,22,.55);isolation:isolate}
+  .primary,.caret{background:var(--orange);color:#2a1102;border:none;font:inherit;font-weight:700;cursor:pointer}
   .primary{display:flex;align-items:center;gap:13px;padding:15px 22px;border-radius:14px 0 0 14px;transition:filter .15s,transform .15s}
   .primary .ico{width:26px;height:26px;flex:none;display:grid;place-items:center}
-  .primary .ico svg{width:24px;height:24px;fill:#04121e}
+  .primary .ico svg{width:24px;height:24px;fill:#2a1102}
   .primary .t{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left}
   .primary .t strong{font-size:1.02rem}
   .primary .t small{font-size:.76rem;font-weight:600;opacity:.72}
   .caret{width:50px;border-radius:0 14px 14px 0;font-size:.7rem;position:relative;transition:filter .15s}
-  .caret::before{content:"";position:absolute;left:0;top:18%;height:64%;width:1px;background:rgba(4,18,30,.28)}
+  .caret::before{content:"";position:absolute;left:0;top:18%;height:64%;width:1px;background:rgba(42,17,2,.28)}
   .split:hover .primary,.split:hover .caret{filter:brightness(1.07)}
   .primary:hover{transform:translateY(-1px)}
-  .caret svg{width:16px;height:16px;fill:#04121e;transition:transform .2s}
+  .caret svg{width:16px;height:16px;fill:#2a1102;transition:transform .2s}
   .split.open .caret svg{transform:rotate(180deg)}
 
   .menu{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(-6px);
@@ -135,14 +136,10 @@
   @media(max-width:840px){.feats{grid-template-columns:1fr}}
   .feat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:.2s}
   .feat:hover{border-color:var(--border-2);background:var(--card-2)}
-  .feat .fi{width:44px;height:44px;border-radius:12px;background:var(--grad);display:grid;place-items:center;
-    font-size:22px;box-shadow:0 8px 20px -6px rgba(34,211,238,.5)}
+  .feat .fi{width:44px;height:44px;border-radius:12px;background:var(--orange);display:grid;place-items:center;
+    font-size:22px;box-shadow:0 8px 20px -6px rgba(249,115,22,.5)}
   .feat h3{margin:15px 0 6px;font-size:1.08rem}
   .feat p{margin:0;color:var(--muted);font-size:.92rem}
-
-  /* CTA */
-  .cta{text-align:center;background:linear-gradient(180deg,rgba(34,211,238,.08),rgba(59,130,246,.05));
-    border:1px solid var(--border);border-radius:22px;padding:52px 24px;margin-top:10px}
 
   footer{border-top:1px solid var(--border);padding:34px 0;color:var(--muted-2);font-size:.88rem}
   .foot{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
@@ -296,13 +293,6 @@
     </div>
   </section>
 
-  <section class="wrap">
-    <div class="cta reveal">
-      <h2 style="margin-top:0">Ready to build?</h2>
-      <p class="h2sub" style="margin-bottom:26px">Grab the desktop app for your platform — free for non-commercial use.</p>
-      <a class="ghbtn" id="ctaBtn" href="#get" style="border-color:var(--border-2);padding:13px 22px;font-size:1rem">↑ Jump to download</a>
-    </div>
-  </section>
 </main>
 
 <footer>
